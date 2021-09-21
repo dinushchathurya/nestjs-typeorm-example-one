@@ -1,6 +1,7 @@
-import { Controller, Get, HttpStatus, Post, Body } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from 'src/dto/CreateUser.dto';
+import { UpdateUserDto } from 'src/dto/UpdateUser.dto';
 
 @Controller('users')
 export class UsersController {
@@ -12,9 +13,19 @@ export class UsersController {
         const users = await this.usersService.getAllUsers();
         return {
             statusCode : HttpStatus.OK,
-            message: 'User fetch successfully',
+            message: 'Users fetch successfully',
             users
         }    
+    }
+
+    @Get(':id')
+    async getUserById(@Param('id') id: number) {
+        const user = await this.usersService.findById(id);
+        return {
+            statusCode: HttpStatus.OK,
+            message: 'User fetch successfully',
+            user
+        }
     }
 
     @Post()
@@ -24,6 +35,24 @@ export class UsersController {
             statusCode: HttpStatus.OK,
             message: 'User created successfully',
             user
+        };
+    }
+
+    @Put(':id')
+    async uppdateUser(@Param('id') id: number, @Body() data: UpdateUserDto) {
+        await this.usersService.updateUser(id, data);
+        return {
+            statusCode: HttpStatus.OK,
+            message: 'User updated successfully',
+        };
+    }
+
+    @Delete(':id')
+    async deleteUser(@Param('id') id: number) {
+        await this.usersService.deleteUser(id);
+        return {
+            statusCode: HttpStatus.OK,
+            message: 'User deleted successfully',
         };
     }
 }
