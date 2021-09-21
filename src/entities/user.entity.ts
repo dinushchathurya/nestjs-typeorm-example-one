@@ -17,8 +17,8 @@ export class User extends BaseEntity{
     hashPassword() {
         this.password = crypto.createHmac('sha256', this.password).digest('hex');
     }
-
+    
     @Column()
-    password: string
+    password: string;
     
 }
