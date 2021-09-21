@@ -1,7 +1,8 @@
-import { Controller, Get, HttpStatus, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Post, Body, Param, Delete, Put, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from 'src/dto/CreateUser.dto';
 import { UpdateUserDto } from 'src/dto/UpdateUser.dto';
+import { Messages } from 'src/constants/Messages.data';
 
 @Controller('users')
 export class UsersController {
@@ -21,6 +22,10 @@ export class UsersController {
     @Get(':id')
     async getUserById(@Param('id') id: number) {
         const user = await this.usersService.findById(id);
+        if(!user){
+            throw new NotFoundException(`${Messages.EMPLOYEE_NOT_EXSIST}`)
+        }
+
         return {
             statusCode: HttpStatus.OK,
             message: 'User fetch successfully',
@@ -40,7 +45,11 @@ export class UsersController {
 
     @Put(':id')
     async uppdateUser(@Param('id') id: number, @Body() data: UpdateUserDto) {
-        await this.usersService.updateUser(id, data);
+        const user = await this.usersService.updateUser(id, data);
+        if (!user) {
+            throw new NotFoundException(`${Messages.EMPLOYEE_NOT_EXSIST}`)
+        }
+
         return {
             statusCode: HttpStatus.OK,
             message: 'User updated successfully',
@@ -49,7 +58,11 @@ export class UsersController {
 
     @Delete(':id')
     async deleteUser(@Param('id') id: number) {
-        await this.usersService.deleteUser(id);
+        const user = await this.usersService.deleteUser(id);
+        if (!user.deleted) {
+            throw new NotFoundException(`${Messages.EMPLOYEE_NOT_EXSIST}`)
+        }
+
         return {
             statusCode: HttpStatus.OK,
             message: 'User deleted successfully',
