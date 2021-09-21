@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BaseEntity } from "typeorm";
 import * as crypto from 'crypto'; 
 
-@Entity()
-export class User {
+@Entity('users')
+export class User extends BaseEntity{
 
     @PrimaryGeneratedColumn()
     id: number;
